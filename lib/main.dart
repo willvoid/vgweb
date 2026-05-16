@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/model/dao/configurations.dart';
 import 'package:myapp/src/pages/home_page.dart';
+import 'package:myapp/src/pages/login_page.dart';
 import 'package:myapp/src/routes/app_routes.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -10,6 +11,9 @@ void main() async {
   await Supabase.initialize(
     url: Configurations.mSupabaseUrl,
     anonKey: Configurations.mSupabaseKey,
+    authOptions: const FlutterAuthClientOptions(
+      authFlowType: AuthFlowType.pkce,
+    ),
   );
   runApp(MyApp());
 }
@@ -17,6 +21,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final session = Supabase.instance.client.auth.currentSession;
+
     return MaterialApp(
       title: 'VG Mueblería',
       theme: ThemeData(
@@ -35,9 +41,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: HomePage(),
+      // Si hay sesión, vamos al Home, si no, al Login
+      home: session == null ? LoginPage() : HomePage(),
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.home,
       onGenerateRoute: AppRoutes.generateRoute,
     );
   }

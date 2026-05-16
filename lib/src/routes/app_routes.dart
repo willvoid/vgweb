@@ -5,6 +5,8 @@ import 'package:myapp/src/pages/buscar_page.dart';
 import 'package:myapp/src/model/producto.dart';
 import 'package:myapp/src/model/categoria.dart';
 import '../pages/detail_page.dart';
+import 'package:myapp/src/pages/login_page.dart';
+import 'package:myapp/src/pages/register_page.dart';
 
 /// Clase que maneja todas las rutas de la aplicación
 class AppRoutes {
@@ -17,6 +19,8 @@ class AppRoutes {
   static const String search = '/buscador';
   static const String profile = '/profile';
   static const String settings = '/settings';
+  static const String login = '/login';
+  static const String register = '/register';
 
   /// Convierte texto a un slug URL-friendly
   static String _toSlug(String text) {
@@ -121,6 +125,13 @@ class AppRoutes {
       // Configuración
       case AppRoutes.settings:
         return _buildRoute(SettingsPage(), settings);
+
+      // Login y Registro
+      case AppRoutes.login:
+        return _buildRoute(LoginPage(), settings);
+      
+      case AppRoutes.register:
+        return _buildRoute(RegisterPage(), settings);
 
       // Ruta por defecto (error)
       default:
