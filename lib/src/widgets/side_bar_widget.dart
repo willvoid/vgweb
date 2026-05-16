@@ -260,6 +260,40 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                           ],
                         ),
                       ),
+
+                      // Botón de cerrar sesión
+                      if (Supabase.instance.client.auth.currentUser != null) ...[
+                        Divider(height: 32, thickness: 1),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              onPressed: () async {
+                                Navigator.of(context).pop(); // Cerrar drawer
+                                await Supabase.instance.client.auth.signOut();
+                                if (mounted) {
+                                  Navigator.of(this.context).pushNamedAndRemoveUntil(
+                                    AppRoutes.login,
+                                    (route) => false,
+                                  );
+                                }
+                              },
+                              icon: Icon(Icons.logout, size: 18),
+                              label: Text('Cerrar sesión'),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.red[700],
+                                side: BorderSide(color: Colors.red[300]!),
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                      ],
                     ],
                   );
                 },
