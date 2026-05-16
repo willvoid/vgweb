@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/model/categoria.dart';
 import 'package:myapp/src/model/dao/categoriacrudimpl.dart';
+import 'package:myapp/src/model/dao/usuariocrudimpl.dart';
+import 'package:myapp/src/model/usuario.dart';
 import 'package:myapp/src/routes/app_routes.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -12,14 +15,33 @@ class SideBarWidget extends StatefulWidget {
 
 class _SideBarWidgetState extends State<SideBarWidget> {
   final CategoriaCrud _categoriaCrud = CategoriaCrud();
+  final UsuarioCrud _usuarioCrud = UsuarioCrud();
   late Future<List<Categoria>> _categoriasFuture;
   final String phoneNumber = "595985255566";
   final String message = "Hola, me interesa un producto";
+  bool _esAdmin = false;
 
   @override
   void initState() {
     super.initState();
     _categoriasFuture = _categoriaCrud.leerCategorias();
+    _verificarRolUsuario();
+  }
+
+  Future<void> _verificarRolUsuario() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user != null) {
+        final usuario = await _usuarioCrud.obtenerUsuario(user.id);
+        if (usuario != null && (usuario.fkCargo == 1 || usuario.fkCargo == 2)) {
+          if (mounted) {
+            setState(() => _esAdmin = true);
+          }
+        }
+      }
+    } catch (e) {
+      print('Error al verificar rol: $e');
+    }
   }
 
   Future<void> _openWhatsApp() async {
@@ -143,6 +165,20 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                       ),
 
                       Divider(height: 32, thickness: 1),
+
+                      // Botón de Administración (solo para cargo 1 o 2)
+                      if (_esAdmin)
+                        _buildMainCategory(
+                          'ADMINISTRACIÓN',
+                          Icons.admin_panel_settings,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            Navigator.pushNamed(context, AppRoutes.admin);
+                          },
+                        ),
+
+                      if (_esAdmin)
+                        Divider(height: 32, thickness: 1),
 
                       // Opciones adicionales
                       _buildMenuItem('Tienda', Icons.store_outlined, () {

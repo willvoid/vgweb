@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/pages/home_page.dart';
 import 'package:myapp/src/pages/category_page.dart';
 import 'package:myapp/src/pages/buscar_page.dart';
+import 'package:myapp/src/pages/admin/admin_page.dart';
 import 'package:myapp/src/model/producto.dart';
 import 'package:myapp/src/model/categoria.dart';
 import '../pages/detail_page.dart';
@@ -21,6 +22,7 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String login = '/login';
   static const String register = '/register';
+  static const String admin = '/admin';
 
   /// Convierte texto a un slug URL-friendly
   static String _toSlug(String text) {
@@ -132,6 +134,9 @@ class AppRoutes {
       
       case AppRoutes.register:
         return _buildRoute(RegisterPage(), settings);
+
+      case AppRoutes.admin:
+        return _buildRoute(const AdminPage(), settings);
 
       // Ruta por defecto (error)
       default:

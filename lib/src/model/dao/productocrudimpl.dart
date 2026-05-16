@@ -626,4 +626,69 @@ Future<Producto?> obtenerProductoConImagenesAlternativo(int idProducto) async {
     }
   }
 
+  /// Crea un nuevo producto en la base de datos
+  Future<Producto?> crearProducto(Producto producto) async {
+    try {
+      final response = await supabase
+          .from('producto')
+          .insert({
+            'nombre': producto.nombre,
+            'descripcion': producto.descripcion,
+            'precio': producto.precio,
+            'cuotas': producto.cuotas,
+            'id_categoria': producto.categoria,
+            'desc2': producto.desc2,
+            'url_img': producto.img,
+            'stock': producto.stock,
+            'recomendado': producto.recomendado ?? 1,
+          })
+          .select()
+          .single();
+
+      return Producto.fromMap(response);
+    } catch (e) {
+      print('Error al crear producto: $e');
+      return null;
+    }
+  }
+
+  /// Actualiza un producto existente
+  Future<bool> actualizarProducto(Producto producto) async {
+    try {
+      await supabase
+          .from('producto')
+          .update({
+            'nombre': producto.nombre,
+            'descripcion': producto.descripcion,
+            'precio': producto.precio,
+            'cuotas': producto.cuotas,
+            'id_categoria': producto.categoria,
+            'desc2': producto.desc2,
+            'url_img': producto.img,
+            'stock': producto.stock,
+            'recomendado': producto.recomendado ?? 1,
+          })
+          .eq('id', producto.id!);
+
+      return true;
+    } catch (e) {
+      print('Error al actualizar producto: $e');
+      return false;
+    }
+  }
+
+  /// Elimina un producto por su id
+  Future<bool> eliminarProducto(int id) async {
+    try {
+      // Primero eliminar imágenes asociadas
+      await supabase.from('imagenes').delete().eq('id_producto', id);
+      // Luego eliminar el producto
+      await supabase.from('producto').delete().eq('id', id);
+      return true;
+    } catch (e) {
+      print('Error al eliminar producto $id: $e');
+      return false;
+    }
+  }
+
 }

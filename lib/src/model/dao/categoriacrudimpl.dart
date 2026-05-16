@@ -30,4 +30,54 @@ class CategoriaCrud {
       return [];
     }
   }
+
+  /// Crea una nueva categoría en la base de datos
+  Future<Categoria?> crearCategoria(Categoria categoria) async {
+    try {
+      final response = await supabase
+          .from('categorias')
+          .insert({
+            'nombre': categoria.nombre,
+            'descripcion': categoria.descripcion,
+            'url_img': categoria.img,
+          })
+          .select()
+          .single();
+
+      return Categoria.fromMap(response);
+    } catch (e) {
+      print('Error al crear categoría: $e');
+      return null;
+    }
+  }
+
+  /// Actualiza una categoría existente
+  Future<bool> actualizarCategoria(Categoria categoria) async {
+    try {
+      await supabase
+          .from('categorias')
+          .update({
+            'nombre': categoria.nombre,
+            'descripcion': categoria.descripcion,
+            'url_img': categoria.img,
+          })
+          .eq('id', categoria.id!);
+
+      return true;
+    } catch (e) {
+      print('Error al actualizar categoría: $e');
+      return false;
+    }
+  }
+
+  /// Elimina una categoría por su id
+  Future<bool> eliminarCategoria(int id) async {
+    try {
+      await supabase.from('categorias').delete().eq('id', id);
+      return true;
+    } catch (e) {
+      print('Error al eliminar categoría $id: $e');
+      return false;
+    }
+  }
 }
