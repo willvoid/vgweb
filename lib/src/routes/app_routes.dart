@@ -111,10 +111,7 @@ class AppRoutes {
           final args = settings.arguments as Map<String, dynamic>;
           final query = args['q'] as String? ?? '';
           final page = args['page'] as int? ?? 1;
-          return _buildRoute(
-            BuscarPage(query: query, page: page),
-            settings,
-          );
+          return _buildRoute(BuscarPage(query: query, page: page), settings);
         }
         return _errorRoute('Se requieren parámetros de búsqueda válidos');
 
@@ -137,7 +134,7 @@ class AppRoutes {
       // Login y Registro
       case AppRoutes.login:
         return _buildRoute(LoginPage(), settings);
-      
+
       case AppRoutes.register:
         return _buildRoute(RegisterPage(), settings);
 
@@ -299,10 +296,10 @@ class _ProductLoaderPageState extends State<ProductLoaderPage> {
     try {
       final productos = await _productoCrud.leerProductos();
       final productoEncontrado = productos.cast<Producto?>().firstWhere(
-            (p) => p != null && AppRoutes._toSlug(p.nombre) == widget.slug,
-            orElse: () => null,
-          );
-      
+        (p) => p != null && AppRoutes._toSlug(p.nombre) == widget.slug,
+        orElse: () => null,
+      );
+
       if (mounted) {
         setState(() {
           _producto = productoEncontrado;
@@ -321,11 +318,7 @@ class _ProductLoaderPageState extends State<ProductLoaderPage> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_producto == null) {
@@ -339,12 +332,21 @@ class _ProductLoaderPageState extends State<ProductLoaderPage> {
               children: [
                 const Icon(Icons.error_outline, size: 80, color: Colors.red),
                 const SizedBox(height: 24),
-                const Text('Oops!', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                const Text(
+                  'Oops!',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 16),
-                const Text('Producto no encontrado', textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
+                const Text(
+                  'Producto no encontrado',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
                 const SizedBox(height: 32),
                 ElevatedButton.icon(
-                  onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
+                  onPressed: () => Navigator.of(
+                    context,
+                  ).pushNamedAndRemoveUntil('/', (route) => false),
                   icon: const Icon(Icons.home),
                   label: const Text('Volver al inicio'),
                 ),
@@ -371,7 +373,7 @@ class CategoryLoaderPage extends StatefulWidget {
 class _CategoryLoaderPageState extends State<CategoryLoaderPage> {
   bool _isLoading = true;
   Categoria? _categoria;
-  final Categoriacrudimpl _categoriaCrud = Categoriacrudimpl();
+  final CategoriaCrud _categoriaCrud = CategoriaCrud();
 
   @override
   void initState() {
@@ -383,10 +385,10 @@ class _CategoryLoaderPageState extends State<CategoryLoaderPage> {
     try {
       final categorias = await _categoriaCrud.leerCategorias();
       final categoriaEncontrada = categorias.cast<Categoria?>().firstWhere(
-            (c) => c != null && AppRoutes._toSlug(c.nombre) == widget.slug,
-            orElse: () => null,
-          );
-      
+        (c) => c != null && AppRoutes._toSlug(c.nombre) == widget.slug,
+        orElse: () => null,
+      );
+
       if (mounted) {
         setState(() {
           _categoria = categoriaEncontrada;
@@ -405,11 +407,7 @@ class _CategoryLoaderPageState extends State<CategoryLoaderPage> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_categoria == null) {
@@ -423,12 +421,21 @@ class _CategoryLoaderPageState extends State<CategoryLoaderPage> {
               children: [
                 const Icon(Icons.error_outline, size: 80, color: Colors.red),
                 const SizedBox(height: 24),
-                const Text('Oops!', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                const Text(
+                  'Oops!',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 16),
-                const Text('Categoría no encontrada', textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
+                const Text(
+                  'Categoría no encontrada',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
                 const SizedBox(height: 32),
                 ElevatedButton.icon(
-                  onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
+                  onPressed: () => Navigator.of(
+                    context,
+                  ).pushNamedAndRemoveUntil('/', (route) => false),
                   icon: const Icon(Icons.home),
                   label: const Text('Volver al inicio'),
                 ),
