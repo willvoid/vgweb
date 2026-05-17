@@ -8,6 +8,8 @@ import 'package:myapp/src/model/categoria.dart';
 import '../pages/detail_page.dart';
 import 'package:myapp/src/pages/login_page.dart';
 import 'package:myapp/src/pages/register_page.dart';
+import 'package:myapp/src/model/dao/productocrudimpl.dart';
+import 'package:myapp/src/model/dao/categoriacrudimpl.dart';
 
 /// Clase que maneja todas las rutas de la aplicación
 class AppRoutes {
@@ -62,8 +64,10 @@ class AppRoutes {
         print('✅ Navegando a producto: ${producto.nombre}');
         return _buildRoute(ProductDetailPage(producto: producto), settings);
       }
-      print('❌ Error: No se recibió un producto válido');
-      return _errorRoute('Se requiere un producto válido');
+      // Acceso directo por URL (sin argumentos)
+      final slug = settings.name!.replaceFirst('/comprar/', '');
+      print('ℹ️ Cargando producto por slug: $slug');
+      return _buildRoute(ProductLoaderPage(slug: slug), settings);
     }
 
     // Manejar rutas de categoría con patrón /categoria/slug
@@ -74,8 +78,10 @@ class AppRoutes {
         print('✅ Navegando a categoría: ${categoria.nombre}');
         return _buildRoute(CategoryPage(categoria: categoria), settings);
       }
-      print('❌ Error: No se recibió una categoría válida');
-      return _errorRoute('Se requiere una categoría válida');
+      // Acceso directo por URL (sin argumentos)
+      final slug = settings.name!.replaceFirst('/categoria/', '');
+      print('ℹ️ Cargando categoría por slug: $slug');
+      return _buildRoute(CategoryLoaderPage(slug: slug), settings);
     }
 
     switch (settings.name) {
@@ -262,5 +268,177 @@ class SettingsPage extends StatelessWidget {
       appBar: AppBar(title: Text('Configuración')),
       body: Center(child: Text('Configuración')),
     );
+  }
+}
+
+// ---------------------------------------------------------
+// Loaders para enlaces directos (Deep Linking)
+// ---------------------------------------------------------
+
+class ProductLoaderPage extends StatefulWidget {
+  final String slug;
+
+  const ProductLoaderPage({Key? key, required this.slug}) : super(key: key);
+
+  @override
+  _ProductLoaderPageState createState() => _ProductLoaderPageState();
+}
+
+class _ProductLoaderPageState extends State<ProductLoaderPage> {
+  bool _isLoading = true;
+  Producto? _producto;
+  final Productocrudimpl _productoCrud = Productocrudimpl();
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarProducto();
+  }
+
+  Future<void> _cargarProducto() async {
+    try {
+      final productos = await _productoCrud.leerProductos();
+      final productoEncontrado = productos.cast<Producto?>().firstWhere(
+            (p) => p != null && AppRoutes._toSlug(p.nombre) == widget.slug,
+            orElse: () => null,
+          );
+      
+      if (mounted) {
+        setState(() {
+          _producto = productoEncontrado;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (_producto == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Error'), backgroundColor: Colors.red),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 80, color: Colors.red),
+                const SizedBox(height: 24),
+                const Text('Oops!', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 16),
+                const Text('Producto no encontrado', textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
+                const SizedBox(height: 32),
+                ElevatedButton.icon(
+                  onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
+                  icon: const Icon(Icons.home),
+                  label: const Text('Volver al inicio'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return ProductDetailPage(producto: _producto!);
+  }
+}
+
+class CategoryLoaderPage extends StatefulWidget {
+  final String slug;
+
+  const CategoryLoaderPage({Key? key, required this.slug}) : super(key: key);
+
+  @override
+  _CategoryLoaderPageState createState() => _CategoryLoaderPageState();
+}
+
+class _CategoryLoaderPageState extends State<CategoryLoaderPage> {
+  bool _isLoading = true;
+  Categoria? _categoria;
+  final Categoriacrudimpl _categoriaCrud = Categoriacrudimpl();
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarCategoria();
+  }
+
+  Future<void> _cargarCategoria() async {
+    try {
+      final categorias = await _categoriaCrud.leerCategorias();
+      final categoriaEncontrada = categorias.cast<Categoria?>().firstWhere(
+            (c) => c != null && AppRoutes._toSlug(c.nombre) == widget.slug,
+            orElse: () => null,
+          );
+      
+      if (mounted) {
+        setState(() {
+          _categoria = categoriaEncontrada;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (_categoria == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Error'), backgroundColor: Colors.red),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 80, color: Colors.red),
+                const SizedBox(height: 24),
+                const Text('Oops!', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 16),
+                const Text('Categoría no encontrada', textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
+                const SizedBox(height: 32),
+                ElevatedButton.icon(
+                  onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
+                  icon: const Icon(Icons.home),
+                  label: const Text('Volver al inicio'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return CategoryPage(categoria: _categoria!);
   }
 }
