@@ -84,41 +84,22 @@ class ImagePickerWidget extends StatelessWidget {
             ),
           ),
         
-        // Botones de selección
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => _pickImage(context, ImageSource.gallery),
-                icon: Icon(Icons.photo_library, size: 18),
-                label: Text('Galería', style: TextStyle(fontSize: 13)),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color.fromARGB(255, 88, 23, 23),
-                  side: BorderSide(color: const Color.fromARGB(255, 88, 23, 23)),
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+        // Botón de selección (solo Galería)
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () => _pickImage(context, ImageSource.gallery),
+            icon: const Icon(Icons.photo_library, size: 18),
+            label: const Text('Galería', style: TextStyle(fontSize: 13)),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: const Color.fromARGB(255, 88, 23, 23),
+              side: const BorderSide(color: const Color.fromARGB(255, 88, 23, 23)),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
-            SizedBox(width: 8),
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => _pickImage(context, ImageSource.camera),
-                icon: Icon(Icons.camera_alt, size: 18),
-                label: Text('Cámara', style: TextStyle(fontSize: 13)),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color.fromARGB(255, 88, 23, 23),
-                  side: BorderSide(color: const Color.fromARGB(255, 88, 23, 23)),
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );
