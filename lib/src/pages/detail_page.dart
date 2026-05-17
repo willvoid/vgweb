@@ -411,7 +411,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               SizedBox(height: 12),
               
               Text(
-                '${widget.producto.precio.toStringAsFixed(0)} Gs',
+                '${widget.producto.precioFormateado} Gs',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -468,7 +468,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               SizedBox(height: 16),
               
               Text(
-                'Total: ${(widget.producto.precio * _cantidad).toStringAsFixed(0)} Gs',
+                'Total: ${Producto.formatearPrecio(widget.producto.precio * _cantidad)} Gs',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -499,7 +499,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      '${widget.producto.precio.toStringAsFixed(0)} Gs',
+                      '${widget.producto.precioFormateado} Gs',
                       style: TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
@@ -564,7 +564,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     SizedBox(height: 12),
                     
                     Text(
-                      'Total: ${(widget.producto.precio * _cantidad).toStringAsFixed(0)} Gs',
+                      'Total: ${Producto.formatearPrecio(widget.producto.precio * _cantidad)} Gs',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

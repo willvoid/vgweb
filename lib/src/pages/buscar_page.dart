@@ -371,7 +371,7 @@ class ProductCard extends StatelessWidget {
                       children: [
                         if (producto.precio != null)
                           Text(
-                            'Gs. ${producto.precio!.toStringAsFixed(0)}',
+                            'Gs. ${producto.precioFormateado}',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

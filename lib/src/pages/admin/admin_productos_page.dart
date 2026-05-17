@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:myapp/src/model/producto.dart';
 import 'package:myapp/src/model/categoria.dart';
 import 'package:myapp/src/model/imagen.dart';
@@ -79,7 +80,9 @@ class _AdminProductosPageState extends State<AdminProductosPage> {
     final nombreCtrl = TextEditingController(text: producto?.nombre ?? '');
     final descripcionCtrl = TextEditingController(text: producto?.descripcion ?? '');
     final desc2Ctrl = TextEditingController(text: producto?.desc2 ?? '');
-    final precioCtrl = TextEditingController(text: producto?.precio.toString() ?? '');
+    final precioCtrl = TextEditingController(
+      text: producto != null ? Producto.formatearPrecio(producto.precio) : '',
+    );
     final cuotasCtrl = TextEditingController(text: producto?.cuotas.toString() ?? '');
     final stockCtrl = TextEditingController(text: producto?.stock?.toString() ?? '0');
     int? selectedCategoriaId = producto?.categoria;
@@ -149,9 +152,16 @@ class _AdminProductosPageState extends State<AdminProductosPage> {
                             SizedBox(height: 14),
                             _field(desc2Ctrl, 'Descripción detallada', 'Descripción larga', Icons.article, maxLines: 3),
                             SizedBox(height: 14),
+                            _field(
+                              precioCtrl,
+                              'Precio',
+                              '0',
+                              Icons.attach_money,
+                              isNumber: true,
+                              formatters: [ThousandsSeparatorInputFormatter()],
+                            ),
+                            SizedBox(height: 14),
                             Row(children: [
-                              Expanded(child: _field(precioCtrl, 'Precio', '0', Icons.attach_money, isNumber: true)),
-                              SizedBox(width: 12),
                               Expanded(child: _field(cuotasCtrl, 'Cuotas', '0', Icons.credit_card, isNumber: true)),
                               SizedBox(width: 12),
                               Expanded(child: _field(stockCtrl, 'Stock', '0', Icons.inventory, isNumber: true)),
@@ -251,7 +261,7 @@ class _AdminProductosPageState extends State<AdminProductosPage> {
                                 final url = await _storageService.subirImagen(bucketName: 'muebles', bytes: nuevaImgBytes!, fileName: nuevaImgNombre!);
                                 if (url != null) imgUrl = url;
                               }
-                              final prod = Producto(id: producto?.id, nombre: nombreCtrl.text.trim(), descripcion: descripcionCtrl.text.trim(), desc2: desc2Ctrl.text.trim(), precio: int.tryParse(precioCtrl.text) ?? 0, cuotas: int.tryParse(cuotasCtrl.text) ?? 0, stock: int.tryParse(stockCtrl.text) ?? 0, categoria: selectedCategoriaId!, img: imgUrl ?? '', recomendado: recomendado);
+                              final prod = Producto(id: producto?.id, nombre: nombreCtrl.text.trim(), descripcion: descripcionCtrl.text.trim(), desc2: desc2Ctrl.text.trim(), precio: int.tryParse(precioCtrl.text.replaceAll('.', '')) ?? 0, cuotas: int.tryParse(cuotasCtrl.text) ?? 0, stock: int.tryParse(stockCtrl.text) ?? 0, categoria: selectedCategoriaId!, img: imgUrl ?? '', recomendado: recomendado);
                               bool success; int? productoId = producto?.id;
                               if (isEditing) { success = await _productoCrud.actualizarProducto(prod); }
                               else { final result = await _productoCrud.crearProducto(prod); success = result != null; productoId = result?.id; }
@@ -286,14 +296,25 @@ class _AdminProductosPageState extends State<AdminProductosPage> {
     );
   }
 
-  Widget _field(TextEditingController ctrl, String label, String hint, IconData icon, {int maxLines = 1, bool isNumber = false}) {
+  Widget _field(
+    TextEditingController ctrl,
+    String label,
+    String hint,
+    IconData icon, {
+    int maxLines = 1,
+    bool isNumber = false,
+    List<TextInputFormatter>? formatters,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.grey[700])),
         SizedBox(height: 6),
         TextField(
-          controller: ctrl, maxLines: maxLines, keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+          controller: ctrl,
+          maxLines: maxLines,
+          keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+          inputFormatters: formatters,
           decoration: InputDecoration(
             hintText: hint, hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
             prefixIcon: Icon(icon, color: _primaryColor, size: 20),
@@ -419,7 +440,7 @@ class _AdminProductosPageState extends State<AdminProductosPage> {
             runSpacing: 8,
             children: [
               _infoChip(Icons.tag, 'ID: ${p.id}'),
-              _infoChip(Icons.attach_money, '${p.precio} Gs.'),
+              _infoChip(Icons.attach_money, '${p.precioFormateado} Gs.'),
               _infoChip(Icons.credit_card, '${p.cuotas} cuotas'),
               _infoChip(Icons.inventory, 'Stock: ${p.stock ?? 0}'),
               _infoChip(Icons.star, p.esRecomendado() ? 'Recomendado' : 'No recomendado'),
@@ -470,4 +491,59 @@ class _NuevaImagen {
   final Uint8List bytes;
   final String nombre;
   _NuevaImagen({required this.bytes, required this.nombre});
+}
+
+class ThousandsSeparatorInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+
+    // Remove any non-digit characters (like dots)
+    String cleanText = newValue.text.replaceAll(RegExp(r'\D'), '');
+
+    if (cleanText.isEmpty) {
+      return newValue.copyWith(
+        text: '',
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+    }
+
+    // Format the number
+    double value = double.parse(cleanText);
+    String formattedText = value.toStringAsFixed(0).replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]}.',
+    );
+
+    // Calculate the new cursor position to keep it at the end of the typed characters
+    int cursorPosition = newValue.selection.end;
+    int digitsBeforeCursor = 0;
+    for (int i = 0; i < cursorPosition; i++) {
+      if (RegExp(r'\d').hasMatch(newValue.text[i])) {
+        digitsBeforeCursor++;
+      }
+    }
+
+    int newCursorPosition = 0;
+    int digitCount = 0;
+    while (digitCount < digitsBeforeCursor && newCursorPosition < formattedText.length) {
+      if (RegExp(r'\d').hasMatch(formattedText[newCursorPosition])) {
+        digitCount++;
+      }
+      newCursorPosition++;
+    }
+
+    // If the cursor was at the end, make sure it stays at the end
+    if (cursorPosition == newValue.text.length) {
+      newCursorPosition = formattedText.length;
+    }
+
+    return TextEditingValue(
+      text: formattedText,
+      selection: TextSelection.collapsed(offset: newCursorPosition),
+    );
+  }
 }

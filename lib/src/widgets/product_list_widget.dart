@@ -308,7 +308,7 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
                       children: [
                         // Precio
                         Text(
-                          '\$${producto.precio.toStringAsFixed(2)}',
+                          'Gs. ${producto.precioFormateado}',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

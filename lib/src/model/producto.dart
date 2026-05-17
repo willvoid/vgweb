@@ -129,6 +129,17 @@ class Producto {
     return recomendado == 1;
   }
 
+  // Método estático para formatear cualquier valor numérico con puntos como separadores de miles
+  static String formatearPrecio(num valor) {
+    return valor.toStringAsFixed(0).replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]}.',
+    );
+  }
+
+  // Getter conveniente para obtener el precio formateado del producto
+  String get precioFormateado => formatearPrecio(precio);
+
   // Método helper para obtener el tiempo desde la creación
   String obtenerTiempoDesdeCreacion() {
     if (createdAt == null) return 'Fecha desconocida';
