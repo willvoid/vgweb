@@ -8,10 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 class ProductDetailPage extends StatefulWidget {
   final Producto producto;
 
-  const ProductDetailPage({
-    Key? key,
-    required this.producto,
-  }) : super(key: key);
+  const ProductDetailPage({Key? key, required this.producto}) : super(key: key);
 
   @override
   _ProductDetailPageState createState() => _ProductDetailPageState();
@@ -31,7 +28,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     // Inicializar con la imagen principal
     _imagenActual = widget.producto.img;
     _imagenesProducto = [widget.producto.img];
-    
+
     // Cargar las imágenes adicionales desde la base de datos
     _cargarImagenesAdicionales();
   }
@@ -43,14 +40,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
 
     try {
-      final productoConImagenes = await _productoCrud.obtenerProductoConImagenesAlternativo(widget.producto.id!);
-      
+      final productoConImagenes = await _productoCrud
+          .obtenerProductoConImagenesAlternativo(widget.producto.id!);
+
       if (productoConImagenes != null) {
         setState(() {
           _imagenesProducto = productoConImagenes.obtenerTodasLasImagenes();
           _isLoadingImages = false;
         });
-        print('✅ Se cargaron ${_imagenesProducto.length} imágenes para el producto');
+        print(
+          '✅ Se cargaron ${_imagenesProducto.length} imágenes para el producto',
+        );
       } else {
         setState(() => _isLoadingImages = false);
         print('⚠️ No se encontraron imágenes adicionales');
@@ -85,10 +85,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   Future<void> _openWhatsApp(Producto producto) async {
     final String phoneNumber = "595985255566";
-    final String url1 = 'https://vgmuebleria.com.py/comprar/${_toSlug(producto.nombre)}';
-    final String message = "${url1}\nHola te escribo desde la web, me interesa un mueble: ${producto.nombre}";
+    final String url1 =
+        'https://vgmuebleria.vercel.app/#/comprar//${_toSlug(producto.nombre)}';
+    final String message =
+        "${url1}\nHola te escribo desde la web, me interesa un mueble: ${producto.nombre}";
     final url = Uri.parse("https://wa.me/$phoneNumber?text=$message");
-    
+
     try {
       if (await canLaunchUrl(url)) {
         await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -136,9 +138,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          _isFavorite 
-            ? 'Agregado a favoritos' 
-            : 'Eliminado de favoritos'
+          _isFavorite ? 'Agregado a favoritos' : 'Eliminado de favoritos',
         ),
         duration: Duration(seconds: 1),
       ),
@@ -148,11 +148,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   Widget build(BuildContext context) {
     return BasePageWidget(
-      showCategoryNavigation: false, // No mostrar navegación de categorías en detalle de producto
-      children: [
-        _buildProductContent(),
-        FooterWidget(),
-      ],
+      showCategoryNavigation:
+          false, // No mostrar navegación de categorías en detalle de producto
+      children: [_buildProductContent(), FooterWidget()],
     );
   }
 
@@ -163,22 +161,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       child: LayoutBuilder(
         builder: (context, constraints) {
           bool isWideScreen = constraints.maxWidth > 800;
-          
+
           if (isWideScreen) {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Galería de imágenes + Imagen principal
-                Expanded(
-                  flex: 1,
-                  child: _buildImageGallerySection(),
-                ),
+                Expanded(flex: 1, child: _buildImageGallerySection()),
                 SizedBox(width: 32),
                 // Información del producto
-                Expanded(
-                  flex: 1,
-                  child: _buildProductInfo(),
-                ),
+                Expanded(flex: 1, child: _buildProductInfo()),
               ],
             );
           } else {
@@ -200,7 +192,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         bool isWideScreen = constraints.maxWidth > 400;
-        
+
         if (isWideScreen) {
           // Layout desktop: galería a la izquierda, imagen principal a la derecha
           return Row(
@@ -210,9 +202,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               _buildVerticalThumbnailGallery(),
               SizedBox(width: 16),
               // Imagen principal
-              Expanded(
-                child: _buildProductImage(),
-              ),
+              Expanded(child: _buildProductImage()),
             ],
           );
         } else {
@@ -243,13 +233,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: isSelected ? const Color.fromARGB(255, 88, 23, 23) : Colors.grey[300]!,
+                  color: isSelected
+                      ? const Color.fromARGB(255, 88, 23, 23)
+                      : Colors.grey[300]!,
                   width: isSelected ? 3 : 1,
                 ),
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: const Color.fromARGB(255, 88, 23, 23).withOpacity(0.3),
+                          color: const Color.fromARGB(
+                            255,
+                            88,
+                            23,
+                            23,
+                          ).withOpacity(0.3),
                           blurRadius: 8,
                           offset: Offset(0, 2),
                         ),
@@ -298,13 +295,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: isSelected ? const Color.fromARGB(255, 88, 23, 23) : Colors.grey[300]!,
+                  color: isSelected
+                      ? const Color.fromARGB(255, 88, 23, 23)
+                      : Colors.grey[300]!,
                   width: isSelected ? 3 : 1,
                 ),
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: const Color.fromARGB(255, 88, 23, 23).withOpacity(0.3),
+                          color: const Color.fromARGB(
+                            255,
+                            88,
+                            23,
+                            23,
+                          ).withOpacity(0.3),
                           blurRadius: 8,
                           offset: Offset(0, 2),
                         ),
@@ -343,9 +347,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return Hero(
       tag: 'producto_${widget.producto.id}',
       child: Container(
-        constraints: BoxConstraints(
-          maxHeight: 500,
-        ),
+        constraints: BoxConstraints(maxHeight: 500),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
@@ -376,10 +378,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     SizedBox(height: 16),
                     Text(
                       'Imagen no disponible',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(color: Colors.grey[600], fontSize: 16),
                     ),
                   ],
                 ),
@@ -395,7 +394,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final bool isMobile = constraints.maxWidth < 768;
-        
+
         if (isMobile) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -409,7 +408,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
               ),
               SizedBox(height: 12),
-              
+
               Text(
                 '${widget.producto.precioFormateado} Gs',
                 style: TextStyle(
@@ -419,11 +418,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
               ),
               SizedBox(height: 12),
-              
-              if (widget.producto.stock != null)
-                _buildStockBadge(),
+
+              if (widget.producto.stock != null) _buildStockBadge(),
               SizedBox(height: 24),
-              
+
               if (widget.producto.descripcion != null &&
                   widget.producto.descripcion!.isNotEmpty)
                 Column(
@@ -448,13 +446,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     SizedBox(height: 20),
                   ],
                 ),
-              
+
               Text(
                 'Características',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 12),
               _buildCaracteristica(
@@ -463,10 +458,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 widget.producto.id.toString(),
               ),
               SizedBox(height: 24),
-              
+
               _buildQuantitySelector(),
               SizedBox(height: 16),
-              
+
               Text(
                 'Total: ${Producto.formatearPrecio(widget.producto.precio * _cantidad)} Gs',
                 style: TextStyle(
@@ -476,7 +471,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
               ),
               SizedBox(height: 16),
-              
+
               _buildAddToCartButton(52),
             ],
           );
@@ -526,7 +521,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
               ),
               SizedBox(width: 40),
-              
+
               Expanded(
                 flex: 1,
                 child: Column(
@@ -556,13 +551,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           SizedBox(height: 24),
                         ],
                       ),
-                    
+
                     _buildQuantitySelector(),
                     SizedBox(height: 24),
-                    
+
                     _buildAddToCartButton(56),
                     SizedBox(height: 12),
-                    
+
                     Text(
                       'Total: ${Producto.formatearPrecio(widget.producto.precio * _cantidad)} Gs',
                       style: TextStyle(
@@ -588,8 +583,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         color: widget.producto.stock! > 10
             ? Colors.green[50]
             : widget.producto.stock! > 0
-                ? Colors.orange[50]
-                : Colors.red[50],
+            ? Colors.orange[50]
+            : Colors.red[50],
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -601,24 +596,24 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             color: widget.producto.stock! > 10
                 ? Colors.green[700]
                 : widget.producto.stock! > 0
-                    ? Colors.orange[700]
-                    : Colors.red[700],
+                ? Colors.orange[700]
+                : Colors.red[700],
           ),
           SizedBox(width: 6),
           Text(
             widget.producto.stock! > 10
                 ? 'En stock (${widget.producto.stock})'
                 : widget.producto.stock! > 0
-                    ? 'Últimas ${widget.producto.stock} unidades'
-                    : 'Sin stock',
+                ? 'Últimas ${widget.producto.stock} unidades'
+                : 'Sin stock',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: widget.producto.stock! > 10
                   ? Colors.green[700]
                   : widget.producto.stock! > 0
-                      ? Colors.orange[700]
-                      : Colors.red[700],
+                  ? Colors.orange[700]
+                  : Colors.red[700],
             ),
           ),
         ],
@@ -631,10 +626,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       children: [
         Text(
           'Cantidad:',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         SizedBox(width: 12),
         Container(
@@ -653,16 +645,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   _cantidad.toString(),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
               IconButton(
                 icon: Icon(Icons.add),
                 onPressed: _incrementarCantidad,
-                color: (widget.producto.stock == null ||
+                color:
+                    (widget.producto.stock == null ||
                         _cantidad < widget.producto.stock!)
                     ? Colors.black
                     : Colors.grey,
@@ -725,18 +715,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               children: [
                 Text(
                   titulo,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                 ),
                 SizedBox(height: 2),
                 Text(
                   valor,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
               ],
             ),

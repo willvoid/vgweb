@@ -10,7 +10,7 @@ class BuscarPage extends StatefulWidget {
   final int page;
 
   const BuscarPage({Key? key, required this.query, this.page = 1})
-      : super(key: key);
+    : super(key: key);
 
   @override
   _BuscarPageState createState() => _BuscarPageState();
@@ -51,7 +51,8 @@ class _BuscarPageState extends State<BuscarPage> {
   @override
   Widget build(BuildContext context) {
     return BasePageWidget(
-      showCategoryNavigation: false, // No mostrar navegación de categorías en búsqueda
+      showCategoryNavigation:
+          false, // No mostrar navegación de categorías en búsqueda
       onCategoryTap: (category) {
         // Navegar a la categoría si se desea
         print('Categoría seleccionada: $category');
@@ -186,7 +187,7 @@ class SearchResultsGrid extends StatelessWidget {
   final List<Producto> productos;
 
   const SearchResultsGrid({Key? key, required this.productos})
-      : super(key: key);
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -291,7 +292,7 @@ class ProductCard extends StatelessWidget {
                             child: CircularProgressIndicator(
                               value: loadingProgress.expectedTotalBytes != null
                                   ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
+                                        loadingProgress.expectedTotalBytes!
                                   : null,
                             ),
                           ),
@@ -413,7 +414,7 @@ class ProductCard extends StatelessWidget {
   Future<void> _openWhatsApp2(Producto producto) async {
     final String phoneNumber = "595985255566";
     final String url1 =
-        'https://vgmuebleria.com.py/comprar/${_toSlug(producto.nombre)}';
+        'https://vgmuebleria.vercel.app/#/comprar//${_toSlug(producto.nombre)}';
     final String message2 =
         "${url1}\nHola te escribo desde la web, me interesa un mueble: ${producto.nombre}";
     final url = Uri.parse("https://wa.me/$phoneNumber?text=$message2");

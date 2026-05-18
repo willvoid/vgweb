@@ -33,7 +33,7 @@ class _ProductsRowWidgetState extends State<ProductsRowWidget> {
   void initState() {
     super.initState();
     _cargarProductos();
-    
+
     // Escuchar cambios en el scroll para mostrar/ocultar flechas
     _scrollController.addListener(_actualizarFlechas);
   }
@@ -52,10 +52,10 @@ class _ProductsRowWidgetState extends State<ProductsRowWidget> {
     setState(() {
       // Mostrar flecha izquierda si no está al inicio
       _mostrarFlechaIzquierda = _scrollController.offset > 0;
-      
+
       // Mostrar flecha derecha si no está al final
-      _mostrarFlechaDerecha = _scrollController.offset < 
-          _scrollController.position.maxScrollExtent;
+      _mostrarFlechaDerecha =
+          _scrollController.offset < _scrollController.position.maxScrollExtent;
     });
   }
 
@@ -131,7 +131,11 @@ class _ProductsRowWidgetState extends State<ProductsRowWidget> {
                       padding: EdgeInsets.all(40),
                       child: Column(
                         children: [
-                          Icon(Icons.error_outline, size: 48, color: Colors.red),
+                          Icon(
+                            Icons.error_outline,
+                            size: 48,
+                            color: Colors.red,
+                          ),
                           SizedBox(height: 16),
                           Text(
                             'Error al cargar productos',
@@ -473,8 +477,10 @@ class _ProductsRowWidgetState extends State<ProductsRowWidget> {
 
   Future<void> _openWhatsApp(Producto producto) async {
     final String phoneNumber = "595985255566";
-    final String url1 = 'https://vgmuebleria.com.py/comprar/${_toSlug(producto.nombre)}';
-    final String message = "${url1}\nHola te escribo desde la web, me interesa un mueble: ${producto.nombre}";
+    final String url1 =
+        'https://vgmuebleria.vercel.app/#/comprar//${_toSlug(producto.nombre)}';
+    final String message =
+        "${url1}\nHola te escribo desde la web, me interesa un mueble: ${producto.nombre}";
     final url = Uri.parse("https://wa.me/$phoneNumber?text=$message");
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
