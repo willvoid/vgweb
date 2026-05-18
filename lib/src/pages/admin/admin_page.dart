@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/pages/admin/admin_categorias_page.dart';
 import 'package:myapp/src/pages/admin/admin_productos_page.dart';
+import 'package:myapp/src/pages/admin/admin_reportes_page.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({Key? key}) : super(key: key);
@@ -24,6 +25,11 @@ class _AdminPageState extends State<AdminPage> {
       title: 'Productos',
       icon: Icons.inventory_2,
       page: const AdminProductosPage(),
+    ),
+    _AdminSection(
+      title: 'Reportes',
+      icon: Icons.picture_as_pdf,
+      page: const AdminReportesPage(),
     ),
   ];
 
