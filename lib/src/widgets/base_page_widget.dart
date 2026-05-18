@@ -350,7 +350,7 @@ class _BasePageWidgetState extends State<BasePageWidget> {
   }
 
   Future<void> _openWhatsApp() async {
-    final url = Uri.parse("https://wa.me/$phoneNumber?text=$message");
+    final url = Uri.parse("https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
     try {
       if (await canLaunchUrl(url)) {
         await launchUrl(url, mode: LaunchMode.externalApplication);

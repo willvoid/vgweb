@@ -414,10 +414,10 @@ class ProductCard extends StatelessWidget {
   Future<void> _openWhatsApp2(Producto producto) async {
     final String phoneNumber = "595985255566";
     final String url1 =
-        'https://vgmuebleria.vercel.app/#/comprar//${_toSlug(producto.nombre)}';
+        'https://vgmuebleria.vercel.app/#/comprar/${_toSlug(producto.nombre)}';
     final String message2 =
         "${url1}\nHola te escribo desde la web, me interesa un mueble: ${producto.nombre}";
-    final url = Uri.parse("https://wa.me/$phoneNumber?text=$message2");
+    final url = Uri.parse("https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message2)}");
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
