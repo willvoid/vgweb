@@ -3,9 +3,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'dart:convert';
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
 import 'package:http/http.dart' as http;
+import 'package:myapp/src/utils/download_helper.dart';
 
 /// Servicio para generar y descargar reportes PDF
 class ReportePdfService {
@@ -370,18 +369,9 @@ class ReportePdfService {
     );
   }
 
-  /// Dispara la descarga del PDF en web
-  void descargarPdf(Uint8List bytes, String filename) {
-    final blob = html.Blob([bytes], 'application/pdf');
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    final anchor = html.AnchorElement()
-      ..href = url
-      ..download = filename
-      ..style.display = 'none';
-    html.document.body!.children.add(anchor);
-    anchor.click();
-    html.document.body!.children.remove(anchor);
-    html.Url.revokeObjectUrl(url);
+  /// Dispara la descarga del PDF de forma agnóstica a la plataforma
+  Future<void> descargarPdf(Uint8List bytes, String filename) async {
+    await DownloadHelper.descargarArchivo(bytes, filename);
   }
 
   /// Formatea un número como precio con separador de miles

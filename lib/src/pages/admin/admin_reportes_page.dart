@@ -63,7 +63,7 @@ class _AdminReportesPageState extends State<AdminReportesPage> {
 
     try {
       final bytes = await _pdfService.generarPdf(_datosReporte);
-      _pdfService.descargarPdf(
+      await _pdfService.descargarPdf(
         bytes,
         'reporte_productos_por_categoria_${DateTime.now().millisecondsSinceEpoch}.pdf',
       );
