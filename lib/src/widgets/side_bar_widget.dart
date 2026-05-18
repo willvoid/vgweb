@@ -167,6 +167,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                       Divider(height: 32, thickness: 1),
 
                       // Botón de Administración (solo para cargo 1 o 2)
+                      /*
                       if (_esAdmin)
                         _buildMainCategory(
                           'ADMINISTRACIÓN',
@@ -179,6 +180,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
 
                       if (_esAdmin)
                         Divider(height: 32, thickness: 1),
+                      */
 
                       // Opciones adicionales
                       _buildMenuItem('Tienda', Icons.store_outlined, () {
@@ -262,6 +264,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                       ),
 
                       // Botón de cerrar sesión
+                      /*
                       if (Supabase.instance.client.auth.currentUser != null) ...[
                         Divider(height: 32, thickness: 1),
                         Padding(
@@ -294,6 +297,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                         ),
                         SizedBox(height: 16),
                       ],
+                      */
                     ],
                   );
                 },

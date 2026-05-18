@@ -21,7 +21,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final session = Supabase.instance.client.auth.currentSession;
+    // final session = Supabase.instance.client.auth.currentSession;
 
     return MaterialApp(
       title: 'VG Mueblería',
@@ -42,7 +42,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       // Si hay sesión, vamos al Home, si no, al Login
-      home: session == null ? LoginPage() : HomePage(),
+      // home: session == null ? LoginPage() : HomePage(),
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRoutes.generateRoute,
     );
