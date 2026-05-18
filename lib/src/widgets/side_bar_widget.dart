@@ -270,14 +270,12 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                             width: double.infinity,
                             child: OutlinedButton.icon(
                               onPressed: () async {
-                                Navigator.of(context).pop(); // Cerrar drawer
+                                final nav = Navigator.of(context);
                                 await Supabase.instance.client.auth.signOut();
-                                if (mounted) {
-                                  Navigator.of(this.context).pushNamedAndRemoveUntil(
-                                    AppRoutes.login,
-                                    (route) => false,
-                                  );
-                                }
+                                nav.pushNamedAndRemoveUntil(
+                                  AppRoutes.login,
+                                  (route) => false,
+                                );
                               },
                               icon: Icon(Icons.logout, size: 18),
                               label: Text('Cerrar sesión'),

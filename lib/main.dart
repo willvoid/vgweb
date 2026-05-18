@@ -41,8 +41,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      // Si hay sesión, vamos al Home, si no, al Login
-      home: session == null ? LoginPage() : HomePage(),
+      initialRoute: AppRoutes.home,
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRoutes.generateRoute,
     );

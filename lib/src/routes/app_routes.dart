@@ -10,6 +10,7 @@ import 'package:myapp/src/pages/login_page.dart';
 import 'package:myapp/src/pages/register_page.dart';
 import 'package:myapp/src/model/dao/productocrudimpl.dart';
 import 'package:myapp/src/model/dao/categoriacrudimpl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Clase que maneja todas las rutas de la aplicación
 class AppRoutes {
@@ -87,7 +88,8 @@ class AppRoutes {
     switch (settings.name) {
       // Página principal
       case AppRoutes.home:
-        return _buildRoute(HomePage(), settings);
+        final session = Supabase.instance.client.auth.currentSession;
+        return _buildRoute(session == null ? LoginPage() : HomePage(), settings);
 
       // Detalle de producto (ruta antigua, mantener por compatibilidad)
       case AppRoutes.productDetail:
