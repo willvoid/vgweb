@@ -109,32 +109,27 @@ class _AdminReportesPageState extends State<AdminReportesPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Container(
             padding: const EdgeInsets.all(20),
             color: Colors.white,
-            child: Row(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Reportes del Sistema',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 33, 33, 33),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Generación de documentos PDF y catálogos',
-                        style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-                      ),
-                    ],
+                const Text(
+                  'Reportes del Sistema',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 33, 33, 33),
                   ),
                 ),
+                const SizedBox(height: 4),
+                Text(
+                  'Generación de documentos PDF y catálogos',
+                  style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                ),
+                const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: (_isLoadingData || _isGeneratingPdf)
                       ? null
